@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundalik Xarajatlar va Byudjet Boshqaruvi</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Animated Glowing Elements -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <!-- Dollar Benjamin Franklin Background Watermark -->
+    <div class="bg-franklin"></div>
+
+    <!-- Main Application Container -->
+    <div class="app-container">
+        <!-- Header / Navigation -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-box">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div>
+                    <h1 class="app-title">Hamyon<span>Pro</span></h1>
+                    <p class="app-subtitle">Kundalik Xarajatlar va Byudjet Boshqaruvi</p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="current-month-badge">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span id="currentMonthYearText">Sentabr 2026</span>
+                </div>
+                <button id="openBudgetModalBtn" class="btn btn-secondary">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Byudjet Limitlari</span>
+                </button>
+                <button id="seedDataBtn" class="btn btn-ghost" title="Namunaviy ma'lumotlarni yuklash">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <button id="resetDataBtn" class="btn btn-ghost text-danger" title="Barcha ma'lumotlarni tozalash">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Quick Jump Bar (Smooth Scroll to any card) -->
+        <nav class="mobile-quick-nav" id="mobileQuickNav">
+            <button class="quick-nav-pill active" onclick="scrollToCard('statsGrid')">
+                <i class="fa-solid fa-wallet"></i> Balans
+            </button>
+            <button class="quick-nav-pill" onclick="scrollToCard('formCard')">
+                <i class="fa-solid fa-circle-plus"></i> Kiritish
+            </button>
+            <button class="quick-nav-pill" onclick="scrollToCard('historyCard')">
+                <i class="fa-solid fa-clock-rotate-left"></i> Tarix
+            </button>
+            <button class="quick-nav-pill" onclick="scrollToCard('budgetCard')">
+                <i class="fa-solid fa-bullseye"></i> Byudjet
+            </button>
+            <button class="quick-nav-pill" onclick="scrollToCard('chartCard')">
+                <i class="fa-solid fa-chart-pie"></i> Tahlil
+            </button>
+        </nav>
+
+        <!-- KPI / Summary Cards (Dashboard) -->
+        <section class="stats-grid" id="statsGrid">
+            <!-- Total Balance Card -->
+            <div class="stat-card balance-card">
+                <div class="card-icon-wrapper balance-icon">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Umumiy Balans</span>
+                    <h2 class="card-value" id="totalBalance">0 so'm</h2>
+                    <div class="card-subtext" id="balanceStatus">
+                        <i class="fa-solid fa-circle-check"></i> Moliyaviy holat barqaror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Income Card -->
+            <div class="stat-card income-card">
+                <div class="card-icon-wrapper income-icon">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Jami Daromad</span>
+                    <h2 class="card-value text-success" id="totalIncome">+0 so'm</h2>
+                    <div class="card-subtext text-success" id="incomeCount">
+                        <i class="fa-solid fa-plus"></i> 0 ta daromad
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Expense Card -->
+            <div class="stat-card expense-card">
+                <div class="card-icon-wrapper expense-icon">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Jami Xarajat</span>
+                    <h2 class="card-value text-danger" id="totalExpense">-0 so'm</h2>
+                    <div class="card-subtext text-danger" id="expenseCount">
+                        <i class="fa-solid fa-minus"></i> 0 ta xarajat
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Budget Status Card -->
+            <div class="stat-card budget-summary-card">
+                <div class="card-icon-wrapper budget-icon">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-label">Oylik Limit Sarfi</span>
+                    <h2 class="card-value" id="overallBudgetPercent">0%</h2>
+                    <div class="card-subtext" id="overallBudgetRemaining">
+                        Limit: 0 so'm
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Layout: 2 Columns -->
+        <main class="main-layout">
+            <!-- Left Column: Transaction Input Form + Transaction History -->
+            <section class="layout-left">
+                <!-- Add Transaction Card -->
+                <div class="glass-card form-card" id="formCard">
+                    <div class="card-header">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-circle-plus text-primary"></i>
+                            <h3>Yangi Operatsiya Kiritish</h3>
+                        </div>
+                        <span class="badge-hint">Tezkor saqlash</span>
+                    </div>
+
+                    <form id="transactionForm" class="transaction-form" autocomplete="off">
+                        <!-- Transaction Type Toggle -->
+                        <div class="type-toggle-group">
+                            <label class="type-toggle-label active-expense" id="labelExpense">
+                                <input type="radio" name="txType" value="expense" checked>
+                                <i class="fa-solid fa-arrow-down"></i>
+                                <span>Xarajat</span>
+                            </label>
+                            <label class="type-toggle-label" id="labelIncome">
+                                <input type="radio" name="txType" value="income">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                <span>Daromad</span>
+                            </label>
+                        </div>
+
+                        <div class="form-grid">
+                            <!-- Amount Input -->
+                            <div class="input-group">
+                                <label for="txAmount"><i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="txAmount" placeholder="Masalan: 50 000" min="1" step="any" required>
+                                    <span class="input-currency">UZS</span>
+                                </div>
+                                <div class="quick-amounts" id="quickAmountsContainer">
+                                    <button type="button" class="quick-chip" data-val="10000">+10k</button>
+                                    <button type="button" class="quick-chip" data-val="50000">+50k</button>
+                                    <button type="button" class="quick-chip" data-val="100000">+100k</button>
+                                    <button type="button" class="quick-chip" data-val="500000">+500k</button>
+                                    <button type="button" class="quick-chip" data-val="1000000">+1M</button>
+                                </div>
+                            </div>
+
+                            <!-- Category Input -->
+                            <div class="input-group">
+                                <label for="txCategory"><i class="fa-solid fa-shapes"></i> Kategoriya</label>
+                                <select id="txCategory" required>
+                                    <!-- Populated dynamically based on type -->
+                                </select>
+                            </div>
+
+                            <!-- Date Input -->
+                            <div class="input-group">
+                                <label for="txDate"><i class="fa-solid fa-calendar-day"></i> Sana</label>
+                                <input type="date" id="txDate" required>
+                            </div>
+
+                            <!-- Note / Description -->
+                            <div class="input-group">
+                                <label for="txDescription"><i class="fa-solid fa-pen"></i> Izoh / Nomi</label>
+                                <input type="text" id="txDescription" placeholder="Masalan: Tushlik yoki Bozorlik" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Operatsiyani Saqlash</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transaction History & Filters -->
+                <div class="glass-card history-card" id="historyCard">
+                    <div class="card-header flex-between flex-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+                            <h3>Oxirgi Transaksiyalar</h3>
+                            <span class="count-badge" id="txFilteredCount">0 ta</span>
+                        </div>
+
+                        <!-- Filter Controls -->
+                        <div class="filter-controls">
+                            <!-- Search Input -->
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="searchFilter" placeholder="Izoh bo'yicha qidirish...">
+                            </div>
+
+                            <!-- Type Filter -->
+                            <select id="typeFilter" class="filter-select">
+                                <option value="all">Barcha turlar</option>
+                                <option value="expense">Faqat Xarajat</option>
+                                <option value="income">Faqat Daromad</option>
+                            </select>
+
+                            <!-- Category Filter -->
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="all">Barcha kategoriyalar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Transactions List Table / Items -->
+                    <div class="transactions-container">
+                        <div class="transactions-list" id="transactionsList">
+                            <!-- Rendered dynamically -->
+                        </div>
+                        <div class="empty-state" id="emptyState" style="display: none;">
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                            <h4>Hozircha operatsiyalar yo'q</h4>
+                            <p>Yangi xarajat yoki daromad qo'shing yoki filtrlarni tekshiring.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Budget Limits & Chart Analytics -->
+            <section class="layout-right">
+                <!-- Visual Analytics: Chart.js -->
+                <div class="glass-card chart-card" id="chartCard">
+                    <div class="card-header flex-between">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-chart-pie text-accent"></i>
+                            <h3>Xarajatlar Tahlili</h3>
+                        </div>
+                        <span class="badge-hint" id="chartExpenseTotal">Jami: 0 so'm</span>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="expenseChart"></canvas>
+                        <div class="empty-chart" id="emptyChart" style="display: none;">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <p>Diagramma uchun xarajatlar mavjud emas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Budget & Category Limits -->
+                <div class="glass-card budget-card" id="budgetCard">
+                    <div class="card-header flex-between">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-bullseye text-warning"></i>
+                            <h3>Oylik Byudjet va Limitlar</h3>
+                        </div>
+                        <button id="openBudgetModalBtn2" class="btn-text">
+                            <i class="fa-solid fa-pen-to-square"></i> O'zgartirish
+                        </button>
+                    </div>
+
+                    <div class="budget-legend">
+                        <div class="legend-item"><span class="dot dot-success"></span> 0 - 79% (Xavfsiz)</div>
+                        <div class="legend-item"><span class="dot dot-warning"></span> 80 - 99% (Diqqat)</div>
+                        <div class="legend-item"><span class="dot dot-danger"></span> 100%+ (Oshib ketgan)</div>
+                    </div>
+
+                    <!-- Category Budget Progress Bars Container -->
+                    <div class="budget-list" id="budgetList">
+                        <!-- Populated dynamically by script.js -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div class="modal-overlay" id="editModalOverlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-solid fa-pen-to-square text-primary"></i>
+                    <h3>Operatsiyani Tahrirlash</h3>
+                </div>
+                <button class="close-modal-btn" id="closeEditModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="editTransactionForm" class="edit-form">
+                <input type="hidden" id="editTxId">
+
+                <div class="type-toggle-group">
+                    <label class="type-toggle-label" id="editLabelExpense">
+                        <input type="radio" name="editTxType" value="expense">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>Xarajat</span>
+                    </label>
+                    <label class="type-toggle-label" id="editLabelIncome">
+                        <input type="radio" name="editTxType" value="income">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span>Daromad</span>
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTxAmount"><i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="editTxAmount" min="1" step="any" required>
+                        <span class="input-currency">UZS</span>
+                    </div>
+                    <div class="quick-amounts" id="editQuickAmountsContainer">
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="10000">+10k</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="50000">+50k</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="100000">+100k</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="500000">+500k</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="1000000">+1M</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTxCategory"><i class="fa-solid fa-shapes"></i> Kategoriya</label>
+                    <select id="editTxCategory" required></select>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTxDate"><i class="fa-solid fa-calendar-day"></i> Sana</label>
+                    <input type="date" id="editTxDate" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTxDescription"><i class="fa-solid fa-pen"></i> Izoh / Nomi</label>
+                    <input type="text" id="editTxDescription" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Budget Settings Modal -->
+    <div class="modal-overlay" id="budgetModalOverlay">
+        <div class="modal-content glass-card budget-modal">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-solid fa-sliders text-warning"></i>
+                    <h3>Kategoriyalar Byudjet Limitlari</h3>
+                </div>
+                <button class="close-modal-btn" id="closeBudgetModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="modal-intro">Har bir kategoriya uchun oylik xarajat limitini belgilang. Xarajat 80% va 100% ga yetganda tizim ogohlantiradi.</p>
+
+            <form id="budgetSettingsForm" class="budget-settings-form">
+                <div class="budget-inputs-container" id="budgetInputsContainer">
+                    <!-- Populated dynamically with category limit inputs -->
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBudgetBtn">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Limitlarni Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Application Script -->
+    <script src="script.js"></script>
+</body>
+</html>
