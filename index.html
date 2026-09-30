@@ -2,248 +2,598 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kundalik Xarajatlar va Byudjet Boshqaruvi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HamyonPro - Mobile Oila Byudjeti & Xarajatlar Boshqaruvi</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- FontAwesome 6 Icons (Primary + CDN Fallback) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom Stylesheet -->
+    <!-- Custom Mobile Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Background Animated Glowing Elements -->
+    <!-- Ambient Light Background Glow Elements -->
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
     <div class="bg-glow glow-3"></div>
 
-    <!-- Dollar Benjamin Franklin Background Watermark -->
-    <div class="bg-franklin"></div>
+    <!-- Main Mobile Application Chassis -->
+    <div class="mobile-app-wrapper">
+        <div class="phone-device" id="phoneDevice">
+            
+            <!-- Mobile Header Bar -->
+            <header class="mobile-header">
+                <div class="header-action-left">
+                    <button class="icon-circle-btn" id="headerBackBtn" style="display: none;" title="Orqaga">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <button class="icon-circle-btn" id="menuToggleBtn" title="Menyu">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                </div>
 
-    <!-- Main Application Container -->
-    <div class="app-container">
-        <!-- Header / Navigation -->
-        <header class="app-header">
-            <div class="header-left">
-                <div class="logo-box">
-                    <i class="fa-solid fa-wallet"></i>
+                <div class="header-center">
+                    <h1 class="header-title" id="headerTitle">Hamyon<span>Pro</span></h1>
+                    <span class="header-sub-badge" id="currentMonthYearText">Sentabr 2026</span>
                 </div>
-                <div>
-                    <h1 class="app-title">Hamyon<span>Pro</span></h1>
-                    <p class="app-subtitle">Kundalik Xarajatlar va Byudjet Boshqaruvi</p>
-                </div>
-            </div>
 
-            <div class="header-right">
-                <div class="current-month-badge">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span id="currentMonthYearText">Sentabr 2026</span>
+                <div class="header-action-right">
+                    <button class="icon-circle-btn" id="profileBtn" title="Profil">
+                        <i class="fa-regular fa-user"></i>
+                    </button>
                 </div>
-                <button id="openBudgetModalBtn" class="btn btn-secondary">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>Byudjet Limitlari</span>
-                </button>
-                <button id="seedDataBtn" class="btn btn-ghost" title="Namunaviy ma'lumotlarni yuklash">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </button>
-                <button id="resetDataBtn" class="btn btn-ghost text-danger" title="Barcha ma'lumotlarni tozalash">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-        </header>
+            </header>
 
-        <!-- Mobile Quick Jump Bar (Smooth Scroll to any card) -->
-        <nav class="mobile-quick-nav" id="mobileQuickNav">
-            <button class="quick-nav-pill active" onclick="scrollToCard('statsGrid')">
-                <i class="fa-solid fa-wallet"></i> Balans
-            </button>
-            <button class="quick-nav-pill" onclick="scrollToCard('formCard')">
-                <i class="fa-solid fa-circle-plus"></i> Kiritish
-            </button>
-            <button class="quick-nav-pill" onclick="scrollToCard('historyCard')">
-                <i class="fa-solid fa-clock-rotate-left"></i> Tarix
-            </button>
-            <button class="quick-nav-pill" onclick="scrollToCard('budgetCard')">
-                <i class="fa-solid fa-bullseye"></i> Byudjet
-            </button>
-            <button class="quick-nav-pill" onclick="scrollToCard('chartCard')">
-                <i class="fa-solid fa-chart-pie"></i> Tahlil
-            </button>
-        </nav>
-
-        <!-- KPI / Summary Cards (Dashboard) -->
-        <section class="stats-grid" id="statsGrid">
-            <!-- Total Balance Card -->
-            <div class="stat-card balance-card">
-                <div class="card-icon-wrapper balance-icon">
-                    <i class="fa-solid fa-scale-balanced"></i>
-                </div>
-                <div class="card-info">
-                    <span class="card-label">Umumiy Balans</span>
-                    <h2 class="card-value" id="totalBalance">0 so'm</h2>
-                    <div class="card-subtext" id="balanceStatus">
-                        <i class="fa-solid fa-circle-check"></i> Moliyaviy holat barqaror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Income Card -->
-            <div class="stat-card income-card">
-                <div class="card-icon-wrapper income-icon">
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-                </div>
-                <div class="card-info">
-                    <span class="card-label">Jami Daromad</span>
-                    <h2 class="card-value text-success" id="totalIncome">+0 so'm</h2>
-                    <div class="card-subtext text-success" id="incomeCount">
-                        <i class="fa-solid fa-plus"></i> 0 ta daromad
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Expense Card -->
-            <div class="stat-card expense-card">
-                <div class="card-icon-wrapper expense-icon">
-                    <i class="fa-solid fa-arrow-trend-down"></i>
-                </div>
-                <div class="card-info">
-                    <span class="card-label">Jami Xarajat</span>
-                    <h2 class="card-value text-danger" id="totalExpense">-0 so'm</h2>
-                    <div class="card-subtext text-danger" id="expenseCount">
-                        <i class="fa-solid fa-minus"></i> 0 ta xarajat
-                    </div>
-                </div>
-            </div>
-
-            <!-- Monthly Budget Status Card -->
-            <div class="stat-card budget-summary-card">
-                <div class="card-icon-wrapper budget-icon">
-                    <i class="fa-solid fa-chart-pie"></i>
-                </div>
-                <div class="card-info">
-                    <span class="card-label">Oylik Limit Sarfi</span>
-                    <h2 class="card-value" id="overallBudgetPercent">0%</h2>
-                    <div class="card-subtext" id="overallBudgetRemaining">
-                        Limit: 0 so'm
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Layout: 2 Columns -->
-        <main class="main-layout">
-            <!-- Left Column: Transaction Input Form + Transaction History -->
-            <section class="layout-left">
-                <!-- Add Transaction Card -->
-                <div class="glass-card form-card" id="formCard">
-                    <div class="card-header">
-                        <div class="title-with-icon">
-                            <i class="fa-solid fa-circle-plus text-primary"></i>
-                            <h3>Yangi Operatsiya Kiritish</h3>
+            <!-- Scrollable Tab Pages Viewport -->
+            <main class="tab-pages-container" id="tabPagesContainer">
+                
+                <!-- ========================================== -->
+                <!-- TAB 1: ASOSIY (HOME / BALANS & OILAVIY BYUDJET) -->
+                <!-- ========================================== -->
+                <section class="tab-page active" id="tabHome">
+                    <!-- Oyma-oy ko'rish navigatsiya paneli (Month Navigator) -->
+                    <div class="month-navigator-card">
+                        <button type="button" class="month-nav-arrow" id="prevMonthBtn" title="Oldingi oy">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <div class="month-nav-center" id="monthPickerTrigger" title="Oyni tanlash">
+                            <i class="fa-regular fa-calendar-days text-purple"></i>
+                            <div class="month-nav-title-group">
+                                <strong id="activeMonthDisplay">Sentabr 2026</strong>
+                                <span class="month-nav-sub" id="monthSubStatus">Joriy oy ko'rinishi</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down month-picker-caret"></i>
                         </div>
-                        <span class="badge-hint">Tezkor saqlash</span>
+                        <button type="button" class="month-nav-arrow" id="nextMonthBtn" title="Keyingi oy">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
                     </div>
 
-                    <form id="transactionForm" class="transaction-form" autocomplete="off">
+                    <!-- Arxiv oy ko'rayotganda ogohlantirish va bugungi oyga qaytish -->
+                    <div class="month-archive-notice" id="notCurrentMonthBanner" style="display: none;">
+                        <span><i class="fa-solid fa-clock-rotate-left"></i> Arxiv oy ko'rilmoqda</span>
+                        <button type="button" class="btn-return-today" id="returnTodayBtn">Joriy oyga qaytish</button>
+                    </div>
+
+                    <!-- Asosiy Moliyaviy Qoldiq & Kerakli Ko'rsatkichlar Kartasi -->
+                    <div class="home-balance-hero-card">
+                        <div class="hero-balance-top">
+                            <div class="hero-balance-info">
+                                <span class="hero-balance-label">UMUMIY SOF QOLDIQ</span>
+                                <h2 class="hero-balance-value" id="totalBalance">0 so'm</h2>
+                            </div>
+                            <div class="hero-status-pill" id="balanceStatus">
+                                <i class="fa-solid fa-circle-check"></i> Barqaror
+                            </div>
+                        </div>
+
+                        <!-- Kerakli 3 ta Asosiy Moliyaviy Ko'rsatkich (Kirim, Chiqim, Erkin Qoldiq) -->
+                        <div class="hero-metrics-grid">
+                            <div class="hero-metric-box metric-income">
+                                <div class="metric-icon-circle">
+                                    <i class="fa-solid fa-arrow-down-long"></i>
+                                </div>
+                                <div class="metric-text-group">
+                                    <span class="metric-title">Jami Kirim</span>
+                                    <span class="metric-amount text-success" id="heroTotalIncome">+0 so'm</span>
+                                </div>
+                            </div>
+
+                            <div class="hero-metric-box metric-expense">
+                                <div class="metric-icon-circle">
+                                    <i class="fa-solid fa-arrow-up-long"></i>
+                                </div>
+                                <div class="metric-text-group">
+                                    <span class="metric-title">Jami Chiqim</span>
+                                    <span class="metric-amount text-danger" id="heroTotalExpense">-0 so'm</span>
+                                </div>
+                            </div>
+
+                            <div class="hero-metric-box metric-savings">
+                                <div class="metric-icon-circle">
+                                    <i class="fa-solid fa-piggy-bank"></i>
+                                </div>
+                                <div class="metric-text-group">
+                                    <span class="metric-title">Erkin Qoldiq</span>
+                                    <span class="metric-amount text-purple" id="heroRemainingSavings">0 so'm</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Oylik Byudjet Sarfi Progressi -->
+                        <div class="hero-budget-meter">
+                            <div class="hero-meter-header">
+                                <span class="meter-text-left"><i class="fa-solid fa-chart-pie text-purple"></i> Oylik byudjet sarfi: <strong id="heroBudgetPercent">0%</strong></span>
+                                <span class="meter-text-right" id="heroBudgetRemaining">0 so'm qoldi</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-fill bar-success" id="heroProgressBar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Tezkor Boshqaruv Tugmalari (Kerakli harakatlar) -->
+                        <div class="hero-actions-bar">
+                            <button type="button" class="hero-quick-btn btn-quick-expense" onclick="switchTab('tabAdd')" title="Chiqim kiritish">
+                                <div class="quick-btn-icon"><i class="fa-solid fa-arrow-down"></i></div>
+                                <span>Chiqim</span>
+                            </button>
+                            <button type="button" class="hero-quick-btn btn-quick-income" onclick="openTopUpBudgetModal()" title="Byudjetga pul kiritish">
+                                <div class="quick-btn-icon"><i class="fa-solid fa-arrow-up"></i></div>
+                                <span>Pul kiritish</span>
+                            </button>
+                            <button type="button" class="hero-quick-btn" onclick="switchTab('tabStats')" title="Statistika">
+                                <div class="quick-btn-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                                <span>Statistika</span>
+                            </button>
+                            <button type="button" class="hero-quick-btn" onclick="switchTab('tabHistory')" title="Tarix">
+                                <div class="quick-btn-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                <span>Tarix</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Oila Byudjeti & O'zaro Bog'liq Kirim-Chiqim Vidjeti -->
+                    <div class="home-section-card budget-family-card">
+                        <div class="section-card-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-house-chimney text-purple"></i>
+                                <h3>Oylik Oila Byudjeti</h3>
+                            </div>
+                            <div class="header-action-group">
+                                <button type="button" class="btn-pill-small btn-pill-green" id="topUpBudgetBtn" onclick="openTopUpBudgetModal()" title="Byudjetga pul qo'shish">
+                                    <i class="fa-solid fa-circle-plus"></i> Pul kiritish
+                                </button>
+                                <button type="button" class="btn-pill-small" id="editFamilyBudgetBtn" title="Oylik byudjetni o'zgartirish">
+                                    <i class="fa-solid fa-pen"></i> Sozlash
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3 interconnected counters -->
+                        <div class="family-budget-grid">
+                            <div class="f-budget-item base-budget">
+                                <span class="f-budget-label"><i class="fa-solid fa-shield-halved"></i> Asosiy Byudjet</span>
+                                <h4 class="f-budget-val" id="homeBaseBudget">0 so'm</h4>
+                                <span class="f-budget-sub">Doimiy oylik tushum</span>
+                            </div>
+
+                            <div class="f-budget-item extra-income">
+                                <span class="f-budget-label"><i class="fa-solid fa-arrow-trend-up text-success"></i> Qo'shimcha Kirim</span>
+                                <h4 class="f-budget-val text-success" id="homeExtraIncome">+0 so'm</h4>
+                                <span class="f-budget-sub" id="homeIncomeCount">0 ta tushum</span>
+                            </div>
+
+                            <div class="f-budget-item total-expense">
+                                <span class="f-budget-label"><i class="fa-solid fa-arrow-trend-down text-danger"></i> Jami Chiqim</span>
+                                <h4 class="f-budget-val text-danger" id="homeTotalExpense">-0 so'm</h4>
+                                <span class="f-budget-sub" id="homeExpenseCount">0 ta xarajat</span>
+                            </div>
+                        </div>
+
+                        <!-- Interconnected Progress Bar -->
+                        <div class="family-budget-progress-block">
+                            <div class="progress-labels-row">
+                                <span class="prog-txt">Byudjet sarflanishi: <strong id="familyBudgetUsedPct">0%</strong></span>
+                                <span class="prog-txt" id="familyBudgetRemainingTxt">0 so'm erkin qoldiq</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-fill bar-success" id="familyBudgetProgressBar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Segment Pills (Barchasi | Chiqim | Qo'shimcha Kirim) -->
+                    <div class="home-type-segment">
+                        <button class="segment-btn active" data-home-filter="all">Barchasi</button>
+                        <button class="segment-btn" data-home-filter="expense">Chiqim (Xarajat)</button>
+                        <button class="segment-btn" data-home-filter="income">Kirim (Daromad)</button>
+                    </div>
+
+                    <!-- Quick Add Action Banner -->
+                    <div class="quick-action-cta" onclick="switchTab('tabAdd')">
+                        <div class="cta-left">
+                            <div class="cta-icon"><i class="fa-solid fa-plus"></i></div>
+                            <div>
+                                <h4>Yangi Operatsiya Kiritish</h4>
+                                <p>Xarajat yoki qo'shimcha daromadni qayd eting</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right cta-arrow"></i>
+                    </div>
+
+                    <!-- Recent Transactions Section -->
+                    <div class="home-section-card">
+                        <div class="section-card-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-receipt text-purple"></i>
+                                <h3>Oxirgi Operatsiyalar</h3>
+                            </div>
+                            <button class="view-all-link" onclick="switchTab('tabHistory')">
+                                Barchasi <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="transactions-list-compact" id="homeTransactionsList">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Ota-onalar uchun Oylik Qisqacha Xulosa & Hisobot Kartasi -->
+                    <div class="home-section-card monthly-summary-card">
+                        <div class="section-card-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-file-invoice-dollar text-purple"></i>
+                                <h3>Oylik Hisobot & Natija</h3>
+                            </div>
+                            <button type="button" class="btn-pill-small" id="copyMonthlySummaryBtn" title="Hisobot nusxasini olish">
+                                <i class="fa-regular fa-copy"></i> Nusxa olish
+                            </button>
+                        </div>
+                        <div class="monthly-summary-body">
+                            <div class="summary-status-badge" id="summaryStatusBadge">
+                                <i class="fa-solid fa-circle-check"></i> Barqaror holat
+                            </div>
+                            <p class="summary-desc-text" id="monthlySummaryText">
+                                Hisob-kitoblar yuklanmoqda...
+                            </p>
+                            <div class="summary-pills-row">
+                                <div class="summary-pill pill-income">
+                                    <span class="pill-label">Jami Kirim</span>
+                                    <strong class="pill-val text-success" id="summaryTotalIncome">0 so'm</strong>
+                                </div>
+                                <div class="summary-pill pill-expense">
+                                    <span class="pill-label">Jami Chiqim</span>
+                                    <strong class="pill-val text-danger" id="summaryTotalExpense">0 so'm</strong>
+                                </div>
+                                <div class="summary-pill pill-saved">
+                                    <span class="pill-label">Erkin Qoldiq</span>
+                                    <strong class="pill-val text-purple" id="summaryRemaining">0 so'm</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 2: OPERATSIYA KIRITISH (SEND / ADD)     -->
+                <!-- ========================================== -->
+                <section class="tab-page" id="tabAdd">
+                    <div class="page-title-block">
+                        <span class="page-subtitle">Hisob-kitob</span>
+                        <h2 class="page-main-title">Operatsiya Kiritish</h2>
+                        <p class="page-desc">Chiqim yoki qo'shimcha kirimni vergul bilan kiritish</p>
+                    </div>
+
+                    <!-- Mavjud Qoldiq Banner -->
+                    <div class="add-balance-banner">
+                        <div class="add-balance-left">
+                            <span class="add-balance-label">Mavjud Sof Qoldiq</span>
+                            <h3 class="add-balance-amount" id="addPageBalanceDisplay">0 so'm</h3>
+                        </div>
+                        <div class="add-balance-badge">
+                            <i class="fa-solid fa-wallet text-purple"></i>
+                            <span>Hamyon</span>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Input Form -->
+                    <form id="transactionForm" class="app-form" autocomplete="off">
                         <!-- Transaction Type Toggle -->
                         <div class="type-toggle-group">
                             <label class="type-toggle-label active-expense" id="labelExpense">
                                 <input type="radio" name="txType" value="expense" checked>
                                 <i class="fa-solid fa-arrow-down"></i>
-                                <span>Xarajat</span>
+                                <span>Chiqim (Xarajat)</span>
                             </label>
                             <label class="type-toggle-label" id="labelIncome">
                                 <input type="radio" name="txType" value="income">
                                 <i class="fa-solid fa-arrow-up"></i>
-                                <span>Daromad</span>
+                                <span>Qo'shimcha Kirim</span>
                             </label>
                         </div>
 
-                        <div class="form-grid">
-                            <!-- Amount Input -->
-                            <div class="input-group">
-                                <label for="txAmount"><i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)</label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="txAmount" placeholder="Masalan: 50 000" min="1" step="any" required>
-                                    <span class="input-currency">UZS</span>
-                                </div>
-                                <div class="quick-amounts" id="quickAmountsContainer">
-                                    <button type="button" class="quick-chip" data-val="10000">+10k</button>
-                                    <button type="button" class="quick-chip" data-val="50000">+50k</button>
-                                    <button type="button" class="quick-chip" data-val="100000">+100k</button>
-                                    <button type="button" class="quick-chip" data-val="500000">+500k</button>
-                                    <button type="button" class="quick-chip" data-val="1000000">+1M</button>
-                                </div>
+                        <!-- Amount Input with Live Comma Formatting & Quick Chips -->
+                        <div class="form-group">
+                            <label for="txAmount" class="form-label">
+                                <i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="txAmount" class="form-input formatted-number-input" placeholder="Masalan: 3,000,000" inputmode="numeric" required>
+                                <span class="input-currency">UZS</span>
                             </div>
-
-                            <!-- Category Input -->
-                            <div class="input-group">
-                                <label for="txCategory"><i class="fa-solid fa-shapes"></i> Kategoriya</label>
-                                <select id="txCategory" required>
-                                    <!-- Populated dynamically based on type -->
-                                </select>
-                            </div>
-
-                            <!-- Date Input -->
-                            <div class="input-group">
-                                <label for="txDate"><i class="fa-solid fa-calendar-day"></i> Sana</label>
-                                <input type="date" id="txDate" required>
-                            </div>
-
-                            <!-- Note / Description -->
-                            <div class="input-group">
-                                <label for="txDescription"><i class="fa-solid fa-pen"></i> Izoh / Nomi</label>
-                                <input type="text" id="txDescription" placeholder="Masalan: Tushlik yoki Bozorlik" required>
+                            <div class="quick-chips-row" id="quickAmountsContainer">
+                                <button type="button" class="quick-chip" data-val="10000">+10,000</button>
+                                <button type="button" class="quick-chip" data-val="50000">+50,000</button>
+                                <button type="button" class="quick-chip" data-val="100000">+100,000</button>
+                                <button type="button" class="quick-chip" data-val="500000">+500,000</button>
+                                <button type="button" class="quick-chip" data-val="1000000">+1,000,000</button>
+                                <button type="button" class="quick-chip" data-val="3000000">+3,000,000</button>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-submit">
+                        <!-- Ota-onalar uchun Tezkor Xarajat Shablonlari -->
+                        <div class="form-group parent-templates-group" id="parentTemplatesGroup">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wand-magic-sparkles text-purple"></i> Tezkor shablonlar (Ota-onalar uchun qulay)
+                            </label>
+                            <div class="parent-templates-grid">
+                                <button type="button" class="template-chip" data-cat="Oziq-ovqat" data-desc="Non va sut">🥖 Non & Sut</button>
+                                <button type="button" class="template-chip" data-cat="Oziq-ovqat" data-desc="Katta bozorlik">🥩 Bozorlik</button>
+                                <button type="button" class="template-chip" data-cat="Sog'liq" data-desc="Dorixona xarajati">💊 Dorixona</button>
+                                <button type="button" class="template-chip" data-cat="Kommunal" data-desc="Gaz, svet va suv to'lovi">⚡ Gaz / Svet</button>
+                                <button type="button" class="template-chip" data-cat="Transport" data-desc="Taksi / Yo'lkira">🚖 Taksi</button>
+                            </div>
+                        </div>
+
+                        <!-- Category Selector -->
+                        <div class="form-group">
+                            <label for="txCategory" class="form-label">
+                                <i class="fa-solid fa-shapes"></i> Kategoriya
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="txCategory" class="form-input form-select" required>
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <i class="fa-solid fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <!-- Description Input -->
+                        <div class="form-group">
+                            <label for="txDescription" class="form-label">
+                                <i class="fa-solid fa-pen"></i> Izoh / Nomi
+                            </label>
+                            <input type="text" id="txDescription" class="form-input" placeholder="Masalan: Bozorlik yoki Maosh" required>
+                        </div>
+
+                        <!-- Date Input -->
+                        <div class="form-group">
+                            <label for="txDate" class="form-label">
+                                <i class="fa-solid fa-calendar-day"></i> Sana
+                            </label>
+                            <input type="date" id="txDate" class="form-input" required>
+                        </div>
+
+                        <!-- Purple Pill Submit Button -->
+                        <button type="submit" class="btn-primary-purple btn-submit">
                             <i class="fa-solid fa-check"></i>
                             <span>Operatsiyani Saqlash</span>
                         </button>
                     </form>
-                </div>
 
-                <!-- Transaction History & Filters -->
-                <div class="glass-card history-card" id="historyCard">
-                    <div class="card-header flex-between flex-wrap">
-                        <div class="title-with-icon">
-                            <i class="fa-solid fa-clock-rotate-left text-primary"></i>
-                            <h3>Oxirgi Transaksiyalar</h3>
-                            <span class="count-badge" id="txFilteredCount">0 ta</span>
+                    <!-- Available Balance Bottom Card -->
+                    <div class="available-balance-bar">
+                        <div class="avail-left">
+                            <span class="avail-label">Mavjud Sof Qoldiq</span>
+                            <span class="avail-value" id="availableBalanceDisplay">0 so'm</span>
                         </div>
+                        <button type="button" class="btn-pill-dark" onclick="openFamilyBudgetModal()">
+                            <i class="fa-solid fa-sliders"></i> Oila Byudjeti
+                        </button>
+                    </div>
+                </section>
 
-                        <!-- Filter Controls -->
-                        <div class="filter-controls">
-                            <!-- Search Input -->
-                            <div class="search-box">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="searchFilter" placeholder="Izoh bo'yicha qidirish...">
-                            </div>
-
-                            <!-- Type Filter -->
-                            <select id="typeFilter" class="filter-select">
-                                <option value="all">Barcha turlar</option>
-                                <option value="expense">Faqat Xarajat</option>
-                                <option value="income">Faqat Daromad</option>
-                            </select>
-
-                            <!-- Category Filter -->
-                            <select id="categoryFilter" class="filter-select">
-                                <option value="all">Barcha kategoriyalar</option>
-                            </select>
+                <!-- ========================================== -->
+                <!-- TAB 3: STATISTIKA (CIRCULAR SPEND CHART)    -->
+                <!-- ========================================== -->
+                <section class="tab-page" id="tabStats">
+                    <div class="page-title-block flex-between">
+                        <div>
+                            <span class="page-subtitle">Tahlil & Hisobot</span>
+                            <h2 class="page-main-title">Statistika</h2>
+                        </div>
+                        <div class="chart-toggle-pills">
+                            <button class="chart-pill active" id="chartTypeDoughnutBtn" onclick="setChartType('doughnut')" title="Aylana diagramma">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </button>
+                            <button class="chart-pill" id="chartTypeBarBtn" onclick="setChartType('bar')" title="Ustunli diagramma">
+                                <i class="fa-solid fa-chart-column"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Transactions List Table / Items -->
+                    <!-- Period Filter Pills (Bu oy, O'tgan oy, Barchasi) -->
+                    <div class="stats-period-segment">
+                        <button class="period-btn active" data-period="currentMonth">Shu oy</button>
+                        <button class="period-btn" data-period="prevMonth">O'tgan oy</button>
+                        <button class="period-btn" data-period="all">Barchasi</button>
+                    </div>
+
+                    <!-- Circular Chart Box with Total in Center -->
+                    <div class="chart-card-box">
+                        <div class="chart-header-row">
+                            <span class="chart-legend-text"><i class="fa-solid fa-circle-notch text-purple"></i> Pul qayerga ketmoqda?</span>
+                            <span class="badge-hint" id="chartExpenseTotal">Jami: 0 so'm</span>
+                        </div>
+
+                        <div class="circular-chart-wrapper">
+                            <canvas id="expenseChart"></canvas>
+                            <div class="chart-center-content" id="chartCenterContent">
+                                <span class="center-subtitle">Jami Chiqim</span>
+                                <span class="center-value" id="statsCenterExpenseValue">0 so'm</span>
+                            </div>
+                            <div class="empty-chart" id="emptyChart" style="display: none;">
+                                <i class="fa-solid fa-chart-pie"></i>
+                                <p>Tanlangan davrda xarajatlar mavjud emas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Financial Indicators Row -->
+                    <div class="stats-kpi-grid">
+                        <div class="stats-kpi-card">
+                            <div class="s-kpi-icon" style="background: rgba(112, 0, 255, 0.12); color: #7000ff;">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <div class="s-kpi-data">
+                                <span class="s-kpi-title">Eng Katta Xarajat</span>
+                                <h4 class="s-kpi-val" id="statTopCategory">-</h4>
+                                <span class="s-kpi-sub" id="statTopCategoryAmount">0 so'm</span>
+                            </div>
+                        </div>
+
+                        <div class="stats-kpi-card">
+                            <div class="s-kpi-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div class="s-kpi-data">
+                                <span class="s-kpi-title">Tejash (Jamg'arma)</span>
+                                <h4 class="s-kpi-val text-success" id="statSavingsRate">0%</h4>
+                                <span class="s-kpi-sub" id="statSavingsAmount">0 so'm qoldi</span>
+                            </div>
+                        </div>
+
+                        <div class="stats-kpi-card">
+                            <div class="s-kpi-icon" style="background: rgba(59, 130, 246, 0.12); color: #3b82f6;">
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </div>
+                            <div class="s-kpi-data">
+                                <span class="s-kpi-title">Kunlik O'rtacha Sarf</span>
+                                <h4 class="s-kpi-val" id="statDailyAverage">0 so'm</h4>
+                                <span class="s-kpi-sub">kuniga sarflandi</span>
+                            </div>
+                        </div>
+
+                        <div class="stats-kpi-card">
+                            <div class="s-kpi-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            <div class="s-kpi-data">
+                                <span class="s-kpi-title">Kirim vs Chiqim</span>
+                                <h4 class="s-kpi-val" id="statIncomeExpenseRatio">0%</h4>
+                                <span class="s-kpi-sub">daromad sarfi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Breakdown List (Pul qayerga ketayotgani foizlari va summalari bilan) -->
+                    <div class="stats-breakdown-section">
+                        <div class="section-card-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-layer-group text-purple"></i>
+                                <h3>Kategoriyalar Bo'yicha Taqsimot</h3>
+                            </div>
+                            <span class="count-badge" id="statsCategoryCount">0 ta</span>
+                        </div>
+
+                        <div class="category-breakdown-list" id="categoryBreakdownList">
+                            <!-- Populated dynamically with progress bars and amounts -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 4: BYUDJET & LIMITLAR                  -->
+                <!-- ========================================== -->
+                <section class="tab-page" id="tabBudget">
+                    <div class="page-title-block flex-between">
+                        <div>
+                            <span class="page-subtitle">Rejalashtirish</span>
+                            <h2 class="page-main-title">Oila Byudjeti</h2>
+                        </div>
+                        <button class="btn-pill-purple" onclick="openFamilyBudgetModal()">
+                            <i class="fa-solid fa-pen-to-square"></i> Oila Byudjeti
+                        </button>
+                    </div>
+
+                    <!-- Oila Byudjeti Katta Kartasi -->
+                    <div class="budget-meter-card">
+                        <div class="meter-info">
+                            <span class="meter-label">Jami Oylik Byudjet</span>
+                            <h3 class="meter-percent" id="budgetOverallBaseDisplay">0 so'm</h3>
+                            <p class="meter-sub" id="budgetOverallDetails">0 so'm sarflandi • 0 so'm qoldi</p>
+                        </div>
+                        <div class="meter-status-badge" id="budgetOverallBadge">
+                            <i class="fa-solid fa-shield-halved"></i> Xavfsiz
+                        </div>
+                    </div>
+
+                    <!-- Category Limits Header & Action -->
+                    <div class="section-card-header mt-18">
+                        <div class="section-title">
+                            <i class="fa-solid fa-sliders text-purple"></i>
+                            <h3>Kategoriyalar Xarajat Limitlari</h3>
+                        </div>
+                        <button class="btn-pill-small" id="openBudgetModalBtn">
+                            <i class="fa-solid fa-sliders"></i> Limitlarni Sozlash
+                        </button>
+                    </div>
+
+                    <!-- Color Legend -->
+                    <div class="budget-legend">
+                        <div class="legend-item"><span class="dot dot-success"></span> 0 - 79% (Xavfsiz)</div>
+                        <div class="legend-item"><span class="dot dot-warning"></span> 80 - 99% (Diqqat)</div>
+                        <div class="legend-item"><span class="dot dot-danger"></span> 100%+ (Oshgan)</div>
+                    </div>
+
+                    <!-- Category Budget Progress Bars Container -->
+                    <div class="budget-list" id="budgetList">
+                        <!-- Populated dynamically by script.js -->
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- TAB 5: TARIX & QIDIRUV                     -->
+                <!-- ========================================== -->
+                <section class="tab-page" id="tabHistory">
+                    <div class="page-title-block flex-between">
+                        <div>
+                            <span class="page-subtitle">Barcha yozuvlar</span>
+                            <h2 class="page-main-title">Operatsiyalar Tarixi</h2>
+                        </div>
+                        <span class="count-badge" id="txFilteredCount">0 ta</span>
+                    </div>
+
+                    <!-- Search Box -->
+                    <div class="search-box-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchFilter" placeholder="Izoh yoki kategoriya bo'yicha qidirish...">
+                    </div>
+
+                    <!-- Filter Selects Row -->
+                    <div class="filter-controls-row">
+                        <select id="typeFilter" class="filter-select">
+                            <option value="all">Barcha turlar</option>
+                            <option value="expense">Faqat Chiqim</option>
+                            <option value="income">Faqat Kirim</option>
+                        </select>
+
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">Barcha kategoriyalar</option>
+                        </select>
+                    </div>
+
+                    <!-- Full Transactions List -->
                     <div class="transactions-container">
                         <div class="transactions-list" id="transactionsList">
-                            <!-- Rendered dynamically -->
+                            <!-- Populated dynamically -->
                         </div>
+                        
                         <div class="empty-state" id="emptyState" style="display: none;">
                             <div class="empty-icon">
                                 <i class="fa-solid fa-receipt"></i>
@@ -252,55 +602,96 @@
                             <p>Yangi xarajat yoki daromad qo'shing yoki filtrlarni tekshiring.</p>
                         </div>
                     </div>
+                </section>
+
+            </main>
+
+            <!-- ========================================== -->
+            <!-- FIXED BOTTOM NAVIGATION BAR                -->
+            <!-- ========================================== -->
+            <nav class="bottom-nav-bar" id="bottomNavBar">
+                <button class="nav-btn active" data-tab="tabHome" onclick="switchTab('tabHome')">
+                    <div class="nav-icon-box">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <span class="nav-label">Balans</span>
+                </button>
+
+                <button class="nav-btn" data-tab="tabAdd" onclick="switchTab('tabAdd')">
+                    <div class="nav-icon-box">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                    <span class="nav-label">Kiritish</span>
+                </button>
+
+                <button class="nav-btn" data-tab="tabStats" onclick="switchTab('tabStats')">
+                    <div class="nav-icon-box">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <span class="nav-label">Statistika</span>
+                </button>
+
+                <button class="nav-btn" data-tab="tabBudget" onclick="switchTab('tabBudget')">
+                    <div class="nav-icon-box">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <span class="nav-label">Byudjet</span>
+                </button>
+
+                <button class="nav-btn" data-tab="tabHistory" onclick="switchTab('tabHistory')">
+                    <div class="nav-icon-box">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <span class="nav-label">Tarix</span>
+                </button>
+            </nav>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALS & OVERLAYS                          -->
+    <!-- ========================================== -->
+
+    <!-- Family Base Budget Setting Modal -->
+    <div class="modal-overlay" id="familyBudgetModalOverlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-solid fa-house-chimney text-purple"></i>
+                    <h3>Oylik Oila Byudjetini Sozlash</h3>
                 </div>
-            </section>
+                <button class="close-modal-btn" id="closeFamilyBudgetModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-            <!-- Right Column: Budget Limits & Chart Analytics -->
-            <section class="layout-right">
-                <!-- Visual Analytics: Chart.js -->
-                <div class="glass-card chart-card" id="chartCard">
-                    <div class="card-header flex-between">
-                        <div class="title-with-icon">
-                            <i class="fa-solid fa-chart-pie text-accent"></i>
-                            <h3>Xarajatlar Tahlili</h3>
-                        </div>
-                        <span class="badge-hint" id="chartExpenseTotal">Jami: 0 so'm</span>
+            <p class="modal-intro">Har oy oilangizga kiradigan asosiy doimiy byudjet miqdorini belgilang. Chiqim va qo'shimcha daromadlar shu byudjet bilan bog'liq hisoblanadi.</p>
+
+            <form id="familyBudgetForm" class="app-form">
+                <div class="form-group">
+                    <label for="familyBaseBudgetInput" class="form-label">
+                        <i class="fa-solid fa-money-bill-wave"></i> Oylik Asosiy Byudjet (so'm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="familyBaseBudgetInput" class="form-input formatted-number-input" placeholder="Masalan: 8,000,000" inputmode="numeric" required>
+                        <span class="input-currency">UZS</span>
                     </div>
-
-                    <div class="chart-wrapper">
-                        <canvas id="expenseChart"></canvas>
-                        <div class="empty-chart" id="emptyChart" style="display: none;">
-                            <i class="fa-solid fa-chart-simple"></i>
-                            <p>Diagramma uchun xarajatlar mavjud emas</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Monthly Budget & Category Limits -->
-                <div class="glass-card budget-card" id="budgetCard">
-                    <div class="card-header flex-between">
-                        <div class="title-with-icon">
-                            <i class="fa-solid fa-bullseye text-warning"></i>
-                            <h3>Oylik Byudjet va Limitlar</h3>
-                        </div>
-                        <button id="openBudgetModalBtn2" class="btn-text">
-                            <i class="fa-solid fa-pen-to-square"></i> O'zgartirish
-                        </button>
-                    </div>
-
-                    <div class="budget-legend">
-                        <div class="legend-item"><span class="dot dot-success"></span> 0 - 79% (Xavfsiz)</div>
-                        <div class="legend-item"><span class="dot dot-warning"></span> 80 - 99% (Diqqat)</div>
-                        <div class="legend-item"><span class="dot dot-danger"></span> 100%+ (Oshib ketgan)</div>
-                    </div>
-
-                    <!-- Category Budget Progress Bars Container -->
-                    <div class="budget-list" id="budgetList">
-                        <!-- Populated dynamically by script.js -->
+                    <div class="quick-chips-row">
+                        <button type="button" class="quick-chip budget-preset-chip" data-val="5000000">5,000,000</button>
+                        <button type="button" class="quick-chip budget-preset-chip" data-val="8000000">8,000,000</button>
+                        <button type="button" class="quick-chip budget-preset-chip" data-val="10000000">10,000,000</button>
+                        <button type="button" class="quick-chip budget-preset-chip" data-val="15000000">15,000,000</button>
+                        <button type="button" class="quick-chip budget-preset-chip" data-val="20000000">20,000,000</button>
                     </div>
                 </div>
-            </section>
-        </main>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelFamilyBudgetBtn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary-purple">Saqlash</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Edit Transaction Modal -->
@@ -308,7 +699,7 @@
         <div class="modal-content glass-card">
             <div class="modal-header">
                 <div class="title-with-icon">
-                    <i class="fa-solid fa-pen-to-square text-primary"></i>
+                    <i class="fa-solid fa-pen-to-square text-purple"></i>
                     <h3>Operatsiyani Tahrirlash</h3>
                 </div>
                 <button class="close-modal-btn" id="closeEditModalBtn">
@@ -323,67 +714,67 @@
                     <label class="type-toggle-label" id="editLabelExpense">
                         <input type="radio" name="editTxType" value="expense">
                         <i class="fa-solid fa-arrow-down"></i>
-                        <span>Xarajat</span>
+                        <span>Chiqim</span>
                     </label>
                     <label class="type-toggle-label" id="editLabelIncome">
                         <input type="radio" name="editTxType" value="income">
                         <i class="fa-solid fa-arrow-up"></i>
-                        <span>Daromad</span>
+                        <span>Kirim</span>
                     </label>
                 </div>
 
-                <div class="input-group">
-                    <label for="editTxAmount"><i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)</label>
+                <div class="form-group">
+                    <label for="editTxAmount" class="form-label"><i class="fa-solid fa-money-bill-wave"></i> Summa (so'm)</label>
                     <div class="input-wrapper">
-                        <input type="number" id="editTxAmount" min="1" step="any" required>
+                        <input type="text" id="editTxAmount" class="form-input formatted-number-input" inputmode="numeric" required>
                         <span class="input-currency">UZS</span>
                     </div>
-                    <div class="quick-amounts" id="editQuickAmountsContainer">
-                        <button type="button" class="quick-chip edit-quick-chip" data-val="10000">+10k</button>
-                        <button type="button" class="quick-chip edit-quick-chip" data-val="50000">+50k</button>
-                        <button type="button" class="quick-chip edit-quick-chip" data-val="100000">+100k</button>
-                        <button type="button" class="quick-chip edit-quick-chip" data-val="500000">+500k</button>
-                        <button type="button" class="quick-chip edit-quick-chip" data-val="1000000">+1M</button>
+                    <div class="quick-chips-row" id="editQuickAmountsContainer">
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="10000">+10,000</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="50000">+50,000</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="100000">+100,000</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="500000">+500,000</button>
+                        <button type="button" class="quick-chip edit-quick-chip" data-val="1000000">+1,000,000</button>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label for="editTxCategory"><i class="fa-solid fa-shapes"></i> Kategoriya</label>
-                    <select id="editTxCategory" required></select>
+                <div class="form-group">
+                    <label for="editTxCategory" class="form-label"><i class="fa-solid fa-shapes"></i> Kategoriya</label>
+                    <select id="editTxCategory" class="form-input form-select" required></select>
                 </div>
 
-                <div class="input-group">
-                    <label for="editTxDate"><i class="fa-solid fa-calendar-day"></i> Sana</label>
-                    <input type="date" id="editTxDate" required>
+                <div class="form-group">
+                    <label for="editTxDescription" class="form-label"><i class="fa-solid fa-pen"></i> Izoh / Nomi</label>
+                    <input type="text" id="editTxDescription" class="form-input" required>
                 </div>
 
-                <div class="input-group">
-                    <label for="editTxDescription"><i class="fa-solid fa-pen"></i> Izoh / Nomi</label>
-                    <input type="text" id="editTxDescription" required>
+                <div class="form-group">
+                    <label for="editTxDate" class="form-label"><i class="fa-solid fa-calendar-day"></i> Sana</label>
+                    <input type="date" id="editTxDate" class="form-input" required>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Bekor qilish</button>
-                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                    <button type="button" class="btn-secondary" id="cancelEditBtn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary-purple">Saqlash</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Budget Settings Modal -->
+    <!-- Category Budget Settings Modal -->
     <div class="modal-overlay" id="budgetModalOverlay">
         <div class="modal-content glass-card budget-modal">
             <div class="modal-header">
                 <div class="title-with-icon">
-                    <i class="fa-solid fa-sliders text-warning"></i>
-                    <h3>Kategoriyalar Byudjet Limitlari</h3>
+                    <i class="fa-solid fa-sliders text-purple"></i>
+                    <h3>Kategoriyalar Xarajat Limitlari</h3>
                 </div>
                 <button class="close-modal-btn" id="closeBudgetModalBtn">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <p class="modal-intro">Har bir kategoriya uchun oylik xarajat limitini belgilang. Xarajat 80% va 100% ga yetganda tizim ogohlantiradi.</p>
+            <p class="modal-intro">Har bir kategoriya uchun oylik xarajat limitini belgilang. Xarajat 80% va 100% ga yetganda ogohlantirish beriladi.</p>
 
             <form id="budgetSettingsForm" class="budget-settings-form">
                 <div class="budget-inputs-container" id="budgetInputsContainer">
@@ -391,12 +782,256 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelBudgetBtn">Bekor qilish</button>
-                    <button type="submit" class="btn btn-primary">Limitlarni Saqlash</button>
+                    <button type="button" class="btn-secondary" id="cancelBudgetBtn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary-purple">Limitlarni Saqlash</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Side Menu / Settings Drawer Modal -->
+    <div class="modal-overlay" id="sideMenuOverlay">
+        <div class="side-drawer-content">
+            <div class="drawer-header">
+                <div class="drawer-logo">
+                    <i class="fa-solid fa-wallet"></i>
+                    <div>
+                        <h3>Hamyon<span>Pro</span></h3>
+                        <p>Oila Byudjeti & Moliya</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" id="closeSideMenuBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="drawer-section">
+                    <span class="drawer-section-title">Oila Byudjeti</span>
+                    <button class="drawer-menu-item" onclick="openFamilyBudgetModal(); closeSideMenu();">
+                        <i class="fa-solid fa-house-chimney text-purple"></i>
+                        <span>Oylik Asosiy Byudjetni sozlash</span>
+                    </button>
+                    <button class="drawer-menu-item" onclick="openBudgetModal(); closeSideMenu();">
+                        <i class="fa-solid fa-sliders text-purple"></i>
+                        <span>Kategoriya limitlari</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Info Modal -->
+    <div class="modal-overlay" id="profileModalOverlay">
+        <div class="modal-content glass-card profile-modal">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-regular fa-user text-purple"></i>
+                    <h3>Profil Ma'lumotlari</h3>
+                </div>
+                <button class="close-modal-btn" id="closeProfileModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="profile-card-content">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <h4 class="profile-name">Eler Minton</h4>
+                <p class="profile-role">Oila Rahbari & Boshqaruvchi</p>
+                <div class="profile-stats-grid">
+                    <div class="profile-stat-box">
+                        <span class="stat-num" id="profileTxCount">0</span>
+                        <span class="stat-desc">Operatsiyalar</span>
+                    </div>
+                    <div class="profile-stat-box">
+                        <span class="stat-num" id="profileBalance">0</span>
+                        <span class="stat-desc">Sof Qoldiq</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary-purple w-100" id="closeProfileBtn2" style="margin-top: 10px;">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Month & Year Selector Modal (Oy va Yilni Tanlash) -->
+    <div class="modal-overlay" id="monthPickerModalOverlay">
+        <div class="modal-content glass-card month-picker-modal">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-regular fa-calendar-days text-purple"></i>
+                    <h3>Oy va Yilni Tanlash</h3>
+                </div>
+                <button type="button" class="close-modal-btn" id="closeMonthPickerBtn" title="Yopish">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="month-picker-body">
+                <!-- Year selector header with left/right buttons -->
+                <div class="year-selector-row">
+                    <button type="button" class="year-nav-btn" id="prevPickerYearBtn" title="Oldingi yil">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span class="picker-year-display" id="pickerYearDisplay">2026</span>
+                    <button type="button" class="year-nav-btn" id="nextPickerYearBtn" title="Keyingi yil">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- 12 Months Grid -->
+                <div class="months-grid-12" id="monthsGrid12">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <div class="picker-footer-actions">
+                    <button type="button" class="btn-secondary w-100" id="pickerReturnCurrentBtn">
+                        <i class="fa-solid fa-calendar-check text-purple"></i> Bugungi joriy oyga o'tish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Byudjetga Pul Kiritish (Top Up Budget) Modal -->
+    <div class="modal-overlay" id="topUpBudgetModalOverlay">
+        <div class="modal-content glass-card topup-budget-modal">
+            <div class="modal-header">
+                <div class="title-with-icon">
+                    <i class="fa-solid fa-circle-plus text-success"></i>
+                    <h3>Byudjetga Pul Kiritish</h3>
+                </div>
+                <button type="button" class="close-modal-btn" id="closeTopUpBudgetBtn" title="Yopish">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="topUpBudgetForm" class="app-form" autocomplete="off">
+                <p class="modal-intro-text">
+                    Oila byudjetiga kelib tushgan pensiya, oylik maosh yoki bolalardan yordam mablag'ini kiriting:
+                </p>
+
+                <!-- Summa -->
+                <div class="form-group">
+                    <label for="topUpAmount" class="form-label">
+                        <i class="fa-solid fa-money-bill-wave"></i> Tushum summasi (so'm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="topUpAmount" class="form-input formatted-number-input" placeholder="0" inputmode="numeric" required>
+                        <span class="input-currency">UZS</span>
+                    </div>
+
+                    <!-- Quick amount chips -->
+                    <div class="quick-chips-row" id="topUpQuickChips">
+                        <button type="button" class="quick-chip" data-val="500000">+500,000</button>
+                        <button type="button" class="quick-chip" data-val="1000000">+1,000,000</button>
+                        <button type="button" class="quick-chip" data-val="2000000">+2,000,000</button>
+                        <button type="button" class="quick-chip" data-val="3000000">+3,000,000</button>
+                    </div>
+                </div>
+
+                <!-- Tushum manbai (Chips for easy selection for parents) -->
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-tag"></i> Tushum manbai</label>
+                    <div class="income-sources-grid" id="topUpSourceGrid">
+                        <button type="button" class="source-chip active" data-source="Pensiya">
+                            <i class="fa-solid fa-person-cane"></i> Pensiya
+                        </button>
+                        <button type="button" class="source-chip" data-source="Oylik maosh">
+                            <i class="fa-solid fa-briefcase"></i> Oylik maosh
+                        </button>
+                        <button type="button" class="source-chip" data-source="Sovg'a & Yordam">
+                            <i class="fa-solid fa-gift"></i> Bolalardan yordam
+                        </button>
+                        <button type="button" class="source-chip" data-source="Qo'shimcha daromad">
+                            <i class="fa-solid fa-laptop-code"></i> Qo'shimcha daromad
+                        </button>
+                        <button type="button" class="source-chip" data-source="Savdo & Biznes">
+                            <i class="fa-solid fa-store"></i> Savdo / Tijorat
+                        </button>
+                        <button type="button" class="source-chip" data-source="Boshqa tushum">
+                            <i class="fa-solid fa-coins"></i> Boshqa tushum
+                        </button>
+                    </div>
+                    <input type="hidden" id="topUpSelectedSource" value="Pensiya">
+                </div>
+
+                <!-- Sana -->
+                <div class="form-group">
+                    <label for="topUpDate" class="form-label">
+                        <i class="fa-regular fa-calendar"></i> Tushum sanasi
+                    </label>
+                    <input type="date" id="topUpDate" class="form-input" required>
+                </div>
+
+                <!-- Izoh -->
+                <div class="form-group">
+                    <label for="topUpDescription" class="form-label">
+                        <i class="fa-regular fa-comment-dots"></i> Izoh (ixtiyoriy)
+                    </label>
+                    <input type="text" id="topUpDescription" class="form-input" placeholder="Masalan: Sentabr oyi pensiyasi">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelTopUpBtn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary-green">
+                        <i class="fa-solid fa-circle-plus"></i> Byudjetga Kiritish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal (Styled in Project Theme) -->
+    <div class="modal-overlay" id="confirmDeleteModalOverlay">
+        <div class="modal-content glass-card confirm-delete-modal">
+            <button class="close-modal-btn modal-corner-close" id="closeConfirmDeleteModalBtn" title="Yopish">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="confirm-icon-circle">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            
+            <h3 class="confirm-title" id="confirmDeleteTitle">Operatsiyani O'chirish</h3>
+            <p class="confirm-desc" id="confirmDeleteDesc">Ushbu operatsiyani tarixdan o'chirib tashlamoqchimisiz?</p>
+            
+            <!-- Transaction Preview Card inside the modal -->
+            <div class="confirm-preview-card" id="confirmDeletePreview" style="display: none;">
+                <div class="confirm-preview-icon" id="confirmPreviewIcon">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <div class="confirm-preview-details">
+                    <h5 id="confirmPreviewTitle">Bozorlik</h5>
+                    <span id="confirmPreviewMeta">Oziq-ovqat • 10.09.2026</span>
+                </div>
+                <div class="confirm-preview-amount text-danger" id="confirmPreviewAmount">
+                    -1,750,000 so'm
+                </div>
+            </div>
+
+            <div class="confirm-warning-note">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Bu amalni ortga qaytarib bo'lmaydi.</span>
+            </div>
+
+            <div class="modal-actions confirm-modal-actions">
+                <button type="button" class="btn-secondary" id="cancelConfirmDeleteBtn">
+                    Bekor qilish
+                </button>
+                <button type="button" class="btn-danger-confirm" id="executeConfirmDeleteBtn">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Ha, O'chirish</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden compatibility tags -->
+    <div id="totalIncome" style="display: none;"></div>
+    <div id="totalExpense" style="display: none;"></div>
+    <div id="overallBudgetPercent" style="display: none;"></div>
+    <div id="overallBudgetRemaining" style="display: none;"></div>
 
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toastContainer"></div>
