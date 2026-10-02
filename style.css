@@ -2648,8 +2648,66 @@ html, body {
     width: 100%;
 }
 
+/* Profile Modal Actions & Edit Mode */
+.profile-modal-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 14px;
+}
 
+.profile-modal-actions button {
+    flex: 1;
+}
 
+.profile-edit-mode {
+    padding-top: 6px;
+    text-align: left;
+}
+
+.avatar-picker-section {
+    margin-bottom: 12px;
+}
+
+.avatar-choices {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.avatar-opt-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--border-subtle);
+    background: var(--bg-card-inner);
+    color: var(--text-main);
+    font-size: 1.15rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.avatar-opt-btn:hover {
+    border-color: var(--primary-purple);
+    color: var(--primary-purple);
+    transform: translateY(-2px);
+}
+
+.avatar-opt-btn.active {
+    border-color: var(--primary-purple);
+    background: var(--primary-purple);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(112, 0, 255, 0.35);
+}
+
+.text-left {
+    text-align: left;
+}
 /* ==========================================================================
    TOAST NOTIFICATIONS
    ========================================================================== */

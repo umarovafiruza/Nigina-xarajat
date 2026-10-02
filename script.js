@@ -37,7 +37,8 @@ const UZBEK_MONTHS = [
 const STORAGE_KEYS = {
     TRANSACTIONS: 'hamyon_transactions',
     BUDGETS: 'hamyon_budgets',
-    FAMILY_BASE_BUDGET: 'hamyon_family_base_budget'
+    FAMILY_BASE_BUDGET: 'hamyon_family_base_budget',
+    PROFILE_USER: 'hamyon_profile_user'
 };
 
 // Application State
@@ -45,6 +46,11 @@ let state = {
     transactions: [],
     budgets: {},
     familyBaseBudget: 8000000, // Default 8,000,000 so'm
+    profile: {
+        name: 'Foydalanuvchi',
+        role: "Oila Rahbari & Boshqaruvchi",
+        avatar: 'fa-user'
+    },
     chartInstance: null,
     currentTab: 'tabHome',
     homeFilter: 'all',
@@ -199,8 +205,18 @@ const elements = {
     closeProfileModalBtn: document.getElementById('closeProfileModalBtn'),
     closeProfileBtn2: document.getElementById('closeProfileBtn2'),
     profileName: document.getElementById('profileName'),
+    profileRole: document.getElementById('profileRole'),
+    profileAvatarIcon: document.getElementById('profileAvatarIcon'),
     profileTxCount: document.getElementById('profileTxCount'),
     profileBalance: document.getElementById('profileBalance'),
+    profileViewMode: document.getElementById('profileViewMode'),
+    profileEditForm: document.getElementById('profileEditForm'),
+    startEditProfileBtn: document.getElementById('startEditProfileBtn'),
+    cancelEditProfileBtn: document.getElementById('cancelEditProfileBtn'),
+    saveProfileBtn: document.getElementById('saveProfileBtn'),
+    editProfileNameInput: document.getElementById('editProfileNameInput'),
+    editProfileRoleInput: document.getElementById('editProfileRoleInput'),
+    avatarChoices: document.getElementById('avatarChoices'),
 
     // Toast Container
     toastContainer: document.getElementById('toastContainer'),
@@ -225,6 +241,7 @@ const elements = {
 document.addEventListener('DOMContentLoaded', () => {
     initDateDefaults();
     loadFromStorage();
+    renderProfileView();
 
     if (state.transactions.length === 0) {
         seedInitialDemoData();
@@ -285,11 +302,30 @@ function loadFromStorage() {
             state.familyBaseBudget = 8000000;
             localStorage.setItem(STORAGE_KEYS.FAMILY_BASE_BUDGET, state.familyBaseBudget);
         }
+
+        const storedProfile = localStorage.getItem(STORAGE_KEYS.PROFILE_USER);
+        if (storedProfile) {
+            try {
+                const parsed = JSON.parse(storedProfile);
+                state.profile = {
+                    name: parsed.name !== undefined ? parsed.name : 'Foydalanuvchi',
+                    role: parsed.role !== undefined ? parsed.role : "Oila Rahbari & Boshqaruvchi",
+                    avatar: parsed.avatar || 'fa-user'
+                };
+            } catch (err) {
+                console.error("Profile parse error:", err);
+            }
+        }
     } catch (e) {
         console.error("Storage loading error:", e);
         state.transactions = [];
         state.budgets = {};
         state.familyBaseBudget = 8000000;
+        state.profile = {
+            name: 'Foydalanuvchi',
+            role: "Oila Rahbari & Boshqaruvchi",
+            avatar: 'fa-user'
+        };
     }
 }
 
@@ -303,6 +339,28 @@ function saveBudgetsToStorage() {
 
 function saveFamilyBudgetToStorage() {
     localStorage.setItem(STORAGE_KEYS.FAMILY_BASE_BUDGET, state.familyBaseBudget);
+}
+
+function saveProfileToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.PROFILE_USER, JSON.stringify(state.profile));
+    } catch (e) {
+        console.error("Profile save error:", e);
+    }
+}
+
+function renderProfileView() {
+    if (elements.profileName) {
+        elements.profileName.textContent = state.profile.name || 'Foydalanuvchi';
+    }
+    if (elements.profileRole) {
+        elements.profileRole.textContent = state.profile.role || "Oila Rahbari & Boshqaruvchi";
+    }
+    if (elements.profileAvatarIcon) {
+        const iconName = state.profile.avatar || 'fa-user';
+        const prefix = iconName === 'fa-face-smile' ? 'fa-regular' : 'fa-solid';
+        elements.profileAvatarIcon.className = `${prefix} ${iconName}`;
+    }
 }
 
 // ============================================================================
@@ -440,13 +498,33 @@ function setupEventListeners() {
         if (e.target === elements.sideMenuOverlay) closeSideMenu();
     });
 
-    // Profile Modal
+    // Profile Modal & Editing
     elements.profileBtn.addEventListener('click', openProfileModal);
     elements.closeProfileModalBtn.addEventListener('click', closeProfileModal);
     elements.closeProfileBtn2.addEventListener('click', closeProfileModal);
     elements.profileModalOverlay.addEventListener('click', (e) => {
         if (e.target === elements.profileModalOverlay) closeProfileModal();
     });
+
+    if (elements.startEditProfileBtn) {
+        elements.startEditProfileBtn.addEventListener('click', switchToProfileEditMode);
+    }
+    if (elements.cancelEditProfileBtn) {
+        elements.cancelEditProfileBtn.addEventListener('click', switchToProfileViewMode);
+    }
+    if (elements.profileEditForm) {
+        elements.profileEditForm.addEventListener('submit', handleSaveProfile);
+    }
+
+    if (elements.avatarChoices) {
+        const avatarBtns = elements.avatarChoices.querySelectorAll('.avatar-opt-btn');
+        avatarBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                avatarBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    }
 
     // Family Budget Modal Triggers
     if (elements.editFamilyBudgetBtn) {
@@ -729,16 +807,65 @@ function closeSideMenu() {
 
 function openProfileModal() {
     const { totalIncome, totalExpense } = calculateFamilyTotals();
-    if (elements.profileName) {
-        elements.profileName.textContent = 'Foydalanuvchi';
-    }
+    renderProfileView();
     elements.profileTxCount.textContent = `${state.transactions.length} ta`;
     elements.profileBalance.textContent = formatCurrency(totalIncome - totalExpense);
+    switchToProfileViewMode();
     elements.profileModalOverlay.classList.add('active');
 }
 
 function closeProfileModal() {
     elements.profileModalOverlay.classList.remove('active');
+    switchToProfileViewMode();
+}
+
+function switchToProfileViewMode() {
+    if (elements.profileViewMode) elements.profileViewMode.style.display = 'flex';
+    if (elements.profileEditForm) elements.profileEditForm.style.display = 'none';
+}
+
+function switchToProfileEditMode() {
+    if (!elements.profileEditForm) return;
+    elements.editProfileNameInput.value = state.profile.name || 'Foydalanuvchi';
+    elements.editProfileRoleInput.value = state.profile.role || "Oila Rahbari & Boshqaruvchi";
+    
+    if (elements.avatarChoices) {
+        const btns = elements.avatarChoices.querySelectorAll('.avatar-opt-btn');
+        btns.forEach(btn => {
+            if (btn.getAttribute('data-icon') === (state.profile.avatar || 'fa-user')) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    if (elements.profileViewMode) elements.profileViewMode.style.display = 'none';
+    elements.profileEditForm.style.display = 'block';
+    elements.editProfileNameInput.focus();
+}
+
+function handleSaveProfile(e) {
+    e.preventDefault();
+    const newName = elements.editProfileNameInput.value.trim() || 'Foydalanuvchi';
+    const newRole = elements.editProfileRoleInput.value.trim() || "Oila Rahbari & Boshqaruvchi";
+    
+    let selectedAvatar = 'fa-user';
+    const activeBtn = elements.avatarChoices ? elements.avatarChoices.querySelector('.avatar-opt-btn.active') : null;
+    if (activeBtn && activeBtn.getAttribute('data-icon')) {
+        selectedAvatar = activeBtn.getAttribute('data-icon');
+    }
+
+    state.profile = {
+        name: newName,
+        role: newRole,
+        avatar: selectedAvatar
+    };
+
+    saveProfileToStorage();
+    renderProfileView();
+    switchToProfileViewMode();
+    showToast("Profil ma'lumotlari muvaffaqiyatli saqlandi!", "success");
 }
 
 // ============================================================================
@@ -2259,4 +2386,8 @@ window.openTopUpBudgetModal = openTopUpBudgetModal;
 window.closeTopUpBudgetModal = closeTopUpBudgetModal;
 // Monthly Summary Card
 window.copyMonthlySummaryToClipboard = copyMonthlySummaryToClipboard;
-
+// Profile Modal
+window.openProfileModal = openProfileModal;
+window.closeProfileModal = closeProfileModal;
+window.switchToProfileEditMode = switchToProfileEditMode;
+window.switchToProfileViewMode = switchToProfileViewMode;

@@ -14,7 +14,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom Mobile Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.1">
 </head>
 <body>
     <!-- Ambient Light Background Glow Elements -->
@@ -834,12 +834,13 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="profile-card-content">
-                <div class="profile-avatar">
-                    <i class="fa-solid fa-user"></i>
+            <!-- Profile View Mode -->
+            <div class="profile-card-content" id="profileViewMode">
+                <div class="profile-avatar" id="profileAvatarDisplay">
+                    <i class="fa-solid fa-user" id="profileAvatarIcon"></i>
                 </div>
                 <h4 class="profile-name" id="profileName">Foydalanuvchi</h4>
-                <p class="profile-role">Oila Rahbari & Boshqaruvchi</p>
+                <p class="profile-role" id="profileRole">Oila Rahbari & Boshqaruvchi</p>
                 <div class="profile-stats-grid">
                     <div class="profile-stat-box">
                         <span class="stat-num" id="profileTxCount">0</span>
@@ -851,8 +852,47 @@
                     </div>
                 </div>
 
-                <button class="btn-primary-purple w-100" id="closeProfileBtn2" style="margin-top: 10px;">Yopish</button>
+                <div class="profile-modal-actions">
+                    <button type="button" class="btn-primary-purple" id="startEditProfileBtn">
+                        <i class="fa-solid fa-pen-to-square"></i> Tahrirlash
+                    </button>
+                    <button type="button" class="btn-secondary" id="closeProfileBtn2">
+                        Yopish
+                    </button>
+                </div>
             </div>
+
+            <!-- Profile Edit Mode -->
+            <form id="profileEditForm" class="profile-edit-mode" style="display: none;">
+                <div class="avatar-picker-section">
+                    <label class="form-label text-left">Belgi / Avatar tanlang:</label>
+                    <div class="avatar-choices" id="avatarChoices">
+                        <button type="button" class="avatar-opt-btn active" data-icon="fa-user" title="Foydalanuvchi"><i class="fa-solid fa-user"></i></button>
+                        <button type="button" class="avatar-opt-btn" data-icon="fa-user-tie" title="Ishbilarmon"><i class="fa-solid fa-user-tie"></i></button>
+                        <button type="button" class="avatar-opt-btn" data-icon="fa-user-graduate" title="Talaba"><i class="fa-solid fa-user-graduate"></i></button>
+                        <button type="button" class="avatar-opt-btn" data-icon="fa-crown" title="Lider"><i class="fa-solid fa-crown"></i></button>
+                        <button type="button" class="avatar-opt-btn" data-icon="fa-house-user" title="Uy egasi"><i class="fa-solid fa-house-user"></i></button>
+                        <button type="button" class="avatar-opt-btn" data-icon="fa-face-smile" title="Tabassum"><i class="fa-regular fa-face-smile"></i></button>
+                    </div>
+                </div>
+
+                <div class="form-group text-left" style="margin-top: 14px;">
+                    <label for="editProfileNameInput" class="form-label">Ism / Foydalanuvchi nomi:</label>
+                    <input type="text" id="editProfileNameInput" class="form-input" placeholder="Ismingizni kiriting" maxlength="30" required>
+                </div>
+
+                <div class="form-group text-left" style="margin-top: 12px;">
+                    <label for="editProfileRoleInput" class="form-label">Rol yoki Maqom:</label>
+                    <input type="text" id="editProfileRoleInput" class="form-input" placeholder="Masalan: Oila Rahbari, A'zo" maxlength="40">
+                </div>
+
+                <div class="profile-modal-actions" style="margin-top: 18px;">
+                    <button type="button" class="btn-secondary" id="cancelEditProfileBtn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary-purple" id="saveProfileBtn">
+                        <i class="fa-solid fa-check"></i> Saqlash
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1037,6 +1077,6 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Application Script -->
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=2.1"></script>
 </body>
 </html>
