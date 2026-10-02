@@ -730,7 +730,7 @@ function closeSideMenu() {
 function openProfileModal() {
     const { totalIncome, totalExpense } = calculateFamilyTotals();
     if (elements.profileName) {
-        elements.profileName.textContent = '';
+        elements.profileName.textContent = 'Foydalanuvchi';
     }
     elements.profileTxCount.textContent = `${state.transactions.length} ta`;
     elements.profileBalance.textContent = formatCurrency(totalIncome - totalExpense);
