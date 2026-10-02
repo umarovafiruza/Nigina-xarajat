@@ -1,1 +1,1 @@
-# Nigina-xarajat
+# HamyonPro - Oila Byudjeti & Xarajatlar Boshqaruvi

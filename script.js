@@ -198,6 +198,7 @@ const elements = {
     profileModalOverlay: document.getElementById('profileModalOverlay'),
     closeProfileModalBtn: document.getElementById('closeProfileModalBtn'),
     closeProfileBtn2: document.getElementById('closeProfileBtn2'),
+    profileName: document.getElementById('profileName'),
     profileTxCount: document.getElementById('profileTxCount'),
     profileBalance: document.getElementById('profileBalance'),
 
@@ -728,6 +729,9 @@ function closeSideMenu() {
 
 function openProfileModal() {
     const { totalIncome, totalExpense } = calculateFamilyTotals();
+    if (elements.profileName) {
+        elements.profileName.textContent = '';
+    }
     elements.profileTxCount.textContent = `${state.transactions.length} ta`;
     elements.profileBalance.textContent = formatCurrency(totalIncome - totalExpense);
     elements.profileModalOverlay.classList.add('active');
